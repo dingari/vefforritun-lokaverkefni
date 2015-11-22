@@ -1,12 +1,17 @@
+'use strict';
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var auth = require('./routes/auth');
+var posts = require('./routes/posts');
 
 var app = express();
 
@@ -22,8 +27,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var cookie = { domain: '',
+               httpOnly: false,
+               secure: false };
+
+app.use(session({
+  secret: 'session secret!',
+  resave: false,
+  saveUninitialized: true,
+  cookie: cookie,
+  name: 'session'
+}));
+
 app.use('/', routes);
 app.use('/users', users);
+app.use('/', auth);
+app.use('/posts', posts);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

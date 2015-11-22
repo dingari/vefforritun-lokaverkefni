@@ -1,5 +1,14 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	h2 Velkomin á síðuna
+
+	if message
+		h4= message
+
+	if user
+		h4= 'Innskráður er: ' + user
+	else
+		h4 Vinsamlegast skráðu þig inn
+
+	
