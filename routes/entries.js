@@ -45,7 +45,6 @@ router.post('/new', auth.ensureLoggedIn, function(req, res, next) {
 	var type = req.query.type;
 	var data = {};
 
-
 	if(type !== 'list') {
 		entries.saveMemo(null, '', '', user.id, new Date(), function(error, result) {
 			if(error) {
@@ -60,6 +59,19 @@ router.post('/new', auth.ensureLoggedIn, function(req, res, next) {
 		});
 	}
 });
+
+router.post('/delete', auth.ensureLoggedIn, function(req, res, next) {
+	var user = req.session.user;
+	var id = req.body.id
+	var data = {};
+
+	entries.delete(id, function() {
+
+		createList(user.id, data, function() {
+			res.render('my_entries', data);
+		})
+	})
+})
 
 router.get('/', auth. ensureLoggedIn, function(req, res, next) {
 	var data = {};

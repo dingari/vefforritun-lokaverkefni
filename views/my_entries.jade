@@ -36,7 +36,8 @@ block content
 					button#save.btn.btn-primary.btn-lg(type='submit')
 						span.glyphicon.glyphicon-ok
 						|  Vista
-					button#delete.btn.btn-warning.pull-right(type='button')
+					button#delete.btn.btn-warning.pull-right(type='submit',
+							formaction='/entries/delete')
 						span.glyphicon.glyphicon-remove
 						|  Eyða
 		.sidebar-right.col-md-2
