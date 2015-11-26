@@ -2,37 +2,40 @@ doctype html
 html
 	head
 		title= title
-		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+		link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
 		
 		link(rel='stylesheet', href='/stylesheets/style.css')
 	body
 		div(class='container')
 			div(class='container-fluid')
-				if sidebar
-					h1= title
-					hr
-
-					div(class='col-md-2	')
-						ul
+				div(class='row')
+					nav
+						ul(class='site-nav')
 							li
-								a(href='/')
-									h4 Heim
-							if user
+								a(href='/') Heim
+							li
+								a(href='/entries') Færslur
+							li
+								a(href='/users') Notendur
+							li 
+								a(href='/search') Leita
+
+						ul(class='user-nav')
+							if (session.user)
 								li
-									a(href='/posts')
-										h4 Skoða vegg
+									a(href='/posts/user/' + session.user.id) Mínar færslur
 								li
-									a(href='/logout') 
-										h4 Útskráning
+									a(href='/settings') Stillingar
+								li
+									a(href='/user/' + session.user.id) 
+										p= session.user.username
 							else
 								li
-									a(href='/login') 
-										h4 Innskráning
+									a(href='/signup') Nýskráning
 								li
-									a(href='/signup') 
-										h4 Nýskráning
-				div(class='col-md-10')
-					block content
+									a(href='/login') Innskráning
+			hr
+			block content
 
-		script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
-		script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+		script(src='/bower_components/jquery/dist/jquery.min.js')
+		script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
