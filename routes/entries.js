@@ -25,18 +25,27 @@ router.post('/my_entries', auth.ensureLoggedIn, function(req, res, next) {
 	var owner_id = req.session.user.id || 3;
 	var data = {};
 
-	console.log("ID", id)
-
-	data.activeItem = id;
-
-	entries.saveMemo(id, title, content, owner_id, date, function(error, status) {
+	entries.saveMemo(id, title, content, owner_id, date, function(error, result) {
 		if(error) {
 			console.error(error);
 		}
 
-		createList(owner_id, data, function() {
-			res.render('my_entries', data);
-		});
+		// Ajax call that does not want the whole list back
+		if(!!req.body.getList) {
+			res.json({
+				id: result,
+				title: title,
+				content: {content: content},
+				date: date.getDate() + '/' + date.getMonth() + '/' + 
+					(''+date.getFullYear()).substr(2,3) + ' - ' + 
+					date.toTimeString().substr(0,8)
+			});
+		} else {
+			data.activeItem = result;
+			createList(owner_id, data, function() {
+				res.render('my_entries', data);
+			});
+		}
 	});
 });
 
@@ -45,7 +54,8 @@ router.post('/new', auth.ensureLoggedIn, function(req, res, next) {
 	var type = req.query.type;
 	var data = {};
 
-	if(type !== 'list') {
+	/*
+	if(type !== 'list' ) {
 		entries.saveMemo(null, '', '', user.id, new Date(), function(error, result) {
 			if(error) {
 				console.error(error);
@@ -58,6 +68,12 @@ router.post('/new', auth.ensureLoggedIn, function(req, res, next) {
 			});
 		});
 	}
+	*/
+
+	createList(user.id, data, function() {
+		res.render('my_entries', data);
+	});
+
 });
 
 router.post('/delete', auth.ensureLoggedIn, function(req, res, next) {

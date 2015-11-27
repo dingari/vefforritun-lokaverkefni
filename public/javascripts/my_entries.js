@@ -23,91 +23,113 @@ var MyList  = (function() {
 	/// EVENT LISTENERES ///
 	////////////////////////
 
-	g_reverseButton.addEventListener('click', function(e) {
-		var values = formValues(g_form);
-		var title = values['title'];
-		var content = values['content'];
+	// g_reverseButton.addEventListener('click', function(e) {
+	// 	var values = formValues(g_form);
+	// 	var title = values['title'];
+	// 	var content = values['content'];
 
-		updateForm(g_form, title, reverseString(content));
-	});
+	// 	updateForm(g_form, title, reverseString(content));
+	// });
 
-	g_stripButton.addEventListener('click', function(e) {
-		var values = formValues(g_form);
-		var title = values['title'];
-		var content = values['content'];
+	// g_stripButton.addEventListener('click', function(e) {
+	// 	var values = formValues(g_form);
+	// 	var title = values['title'];
+	// 	var content = values['content'];
 
-		updateForm(g_form, title, content.replace(/<[^>]+>/ig, ''));
-	})
+	// 	updateForm(g_form, title, content.replace(/<[^>]+>/ig, ''));
+	// })
 
 	g_saveButton.addEventListener('click', function(e) {
 		e.preventDefault();
 
 		// Get the content
-		var d = new Date();
 		var values = formValues(g_form);
 		var titleText = values['title'];
-		var dateText = d.toLocaleDateString() + " - " + d.toTimeString().substr(0,5);
 		var content = values['content'];
 
-		// The title is the ID so we don't want duplicates
-		if(!validateTitle(titleText)) {
-			// We allow the same title if we're saving the current entry
-			if(titleText === g_selectedId) {
-				editItem(titleText, dateText, content);
-				moveToTop(document.getElementById(titleText));
-				updateAndSave();
+		var url = location.protocol + '//' + location.host 
+			+ '/entries/my_entries';
 
-				return;
-			}
+		var id = $('entrylist-item.active').attr('id');
 
-			// The error is only displayed once
-			if(this.parentNode.querySelector(".error-message") === null)
-				this.parentNode.appendChild(createErrorMessage("Athugaðu titilinn"));
-
-		   return;
 		}
 
-		// If we encounter no error with the title we go ahead and create the node
-		// and remove the error message (if there is any)
-		if(this.parentNode.querySelector(".error-message") !== null) {
-			this.parentNode.removeChild(this.parentNode.querySelector(".error-message"));
-		}
+		$.ajax({
+			type: 'POST',
+			data: {
+				id: id, 
+				title: titleText, 
+				content: content,
+				getList: false},
+			url: url
+		})
+			.done(function(res) {
+				console.log("done", res);
 
-		addListItem(titleText, dateText, content);
-		updateAndSave();
+				$('entrylist-item').removeClass('active');
+
+				if($('#' + res.id).length === 0) {
+					var a = $('<a />', {
+						id: res.id,
+						href: '#',
+						class: 'list-group-item entrylist-item'
+					})
+						.attr('dataset-title', res.title)
+						.attr('dataset-date', res.date)
+						.attr('dataset-content', JSON.stringify(res.content));
+
+					var p = $('<p></p>', {class: 'text-left'})
+						.append(res.date);
+					var h = $('<h4></h4>', {class: 'text-left'})
+						.append(res.title);
+
+					a.append(p).append(h);
+
+					$('.saved-entries').prepend(a);
+				}
+
+				$('#' + res.id).addClass('active');
+				$('#' + res.id).click(itemClick);
+			})
+			.fail(function() {
+				console.log("AAH SOMETHING WENT TERRIBLY WRONG!!!")
+			});
 	});
 
 	g_deleteButton.addEventListener('click', function(e) {
-		e.preventDefault();
-		if(!e.currentTarget.classList.contains("disabled"))
-			removeListItem(g_selectedId);
+		//e.preventDefault();
+		// if(!e.currentTarget.classList.contains("disabled"))
+		// 	removeListItem(g_selectedId);
 	});
 
+	/*
 	g_form.addEventListener('keyup', function(e) {
 		updateCounters(formValues(g_form)['content']);
 	})
+*/
 
+	function itemClick() {
+		$('a.entrylist-item').removeClass('active');
+		$(this).addClass('active');
+
+		$('#title').attr('value', $(this).attr('dataset-title'));
+
+		var content = $(this).attr('dataset-content');
+		$('#content').html(JSON.parse(content).content);
+	}
 
 	//////////////////////
 	/// MAIN FUNCTIONS ///
 	//////////////////////
 
 	function init() {
-		console.log("init");
-		if('items' in localStorage) {
-			var items = JSON.parse(localStorage.getItem('items'));
-			for(var i=items.length-1; i>=0; i--) {
-				addListItem(items[i].title, items[i].date, items[i].content);
-			}
-			
-			return;
-		}
-
-		updateAndSave();
-		g_deleteButton.classList.add('disabled');
+		$('.entrylist-item').attr('href', '#');
+		$('a.entrylist-item').click(itemClick);
 	}
 
 	function updateAndSave() {
+		return;
+
 		var items = [];
 		
 		for(var i=0; i<g_listItems.length; i++) {

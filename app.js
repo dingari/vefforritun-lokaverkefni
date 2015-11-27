@@ -14,6 +14,7 @@ var auth = require('./routes/auth');
 var entries = require('./routes/entries');
 
 var app = express();
+app.locals.pretty = true;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

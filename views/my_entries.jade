@@ -4,21 +4,24 @@ block content
 	.row
 		.col-md-2
 			.list-group.saved-entries(role='group')
-				.list-group.saved-entries(role='group')
-					if (list)	
-						each item, index in list
-							if (activeItem == item.id)
-								a(class='list-group-item entrylist-item active',
-									href='/entries/my_entries?id='+item.id,
-									id=item.id)
-										p(class='text-left')= item.date 
-										h4(class='text-left')= item.title
-							else
-								a(class='list-group-item entrylist-item', 
+				if (list)	
+					each item, index in list
+						if (activeItem == item.id)
+							a(class='list-group-item entrylist-item active',
 								href='/entries/my_entries?id='+item.id,
-								id=item.id)
+								id=item.id,
+								dataset-title=item.title,
+								dataset-content=item.content)
 									p(class='text-left')= item.date 
 									h4(class='text-left')= item.title
+						else
+							a(class='list-group-item entrylist-item', 
+							href='/entries/my_entries?id='+item.id,
+							id=item.id,
+							dataset-title=item.title,
+							dataset-content=item.content)
+								p(class='text-left')= item.date 
+								h4(class='text-left')= item.title
 
 		.textsection.col-md-8
 			form#form(action='/entries/my_entries', method='post')
@@ -42,7 +45,7 @@ block content
 						|  Eyða
 		.sidebar-right.col-md-2
 			form(action='/entries/new' method='post')
-				button#new.btn.btn-info.btn-block(type='submit')
+				a#new.btn.btn-info.btn-block(href='/entries/my_entries')
 					span.glyphicon.glyphicon-sunglasses
 					|  Ný færsla
 			p.counter
@@ -58,4 +61,4 @@ block content
 			//- 	span.glyphicon.glyphicon-sunglasses
 			//- 	|  Snúa texta við
 
-	//script(src='/javascripts/my_entries.js')
+	script(src='/javascripts/my_entries.js')
