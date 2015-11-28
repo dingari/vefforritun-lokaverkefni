@@ -7,12 +7,16 @@ block content
 				if (list)	
 					each item, index in list
 						- klass = 'list-group-item entrylist-item'
+						- icon = 'list-icon glyphicon'
+
 						if (activeItem == item.id)
 							- klass += ' active'
 						if (item.content.checked)
 							- klass += ' list'
+							- icon += ' glyphicon-th-list'
 						else
 							- klass += ' memo'
+							- icon += '  glyphicon-pencil'
 
 						a(class=klass, 
 							href='/entries/my_entries' + path + '?id='+item.id,
@@ -20,8 +24,8 @@ block content
 							data-title=item.title,
 							data-content=item.content)
 								p(class='text-left')= item.date 
+								span(class = icon)
 								h4(class='text-left')= item.title
-							
 
 		.textsection.col-md-8
 			form#form(action='/entries/my_entries' + path, method='post')

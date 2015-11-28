@@ -67,21 +67,30 @@ var MyList  = (function() {
 					});
 
 					var p = $('<p></p>', {class: 'text-left'});
+					var s = $('<span></span>', {class: 'glyphicon list-icon'});
 					var h = $('<h4></h4>', {class: 'text-left'});
 
-					a.append(p).append(h);
+					a.append(p).append(s).append(h);
 
 					$('.saved-entries').prepend(a);
 				} 
 
-				var type = (res.content.checked) ? 'list' : 'memo'
+				var type, icon;
+				if(res.content.checked) {
+					type = 'list';
+					icon = 'glyphicon-th-list';
+				} else {
+					type = 'memo';
+					icon = 'glyphicon-pencil';
+				}
 
 				$('#' + res.id)
 					.attr('data-title', res.title)
 					.attr('data-date', res.date)
 					.attr('data-content', JSON.stringify(res.content))
+					.addClass(type)
 					.addClass('active')
-					.addClass(type);
+					.find('.glyphicon').addClass(icon);
 
 				console.log('response', res.content)
 
@@ -100,6 +109,10 @@ var MyList  = (function() {
 
 		var url = location.protocol + '//' + location.host + '/entries/delete';
 		var id = $('.entrylist-item.active').attr('id');
+
+		if(!id) {
+			return;
+		}
 		$.ajax({
 			type: 'POST',
 			data: {id: id, getList: false},
@@ -108,6 +121,12 @@ var MyList  = (function() {
 			.done(function(response) {
 				console.log("done", response);
 
+				var next = $('#' + response.id).next();
+				if(next.length === 0) {
+					next = $('#' + response.id).prev();
+				}
+
+				next.addClass('active');
 				$('#' + response.id).remove();
 			})
 			.fail(function() {
@@ -321,54 +340,21 @@ var MyList  = (function() {
 		$('#newlist').on('click', function(e) {
 			e.preventDefault();
 
+			$('#title').val('').focus();
+			$('.entrylist-item').removeClass('active')
 			createChecklist({
 				content: '',
 				values: ''
 			});
 		});
-	}
 
-	function updateAndSave() {
-		return;
+		$('#new').on('click', function(e) {
+			e.preventDefault();
 
-		var items = [];
-		
-		for(var i=0; i<g_listItems.length; i++) {
-			var title = g_listItems[i].dataset.title;
-			var date = g_listItems[i].dataset.date;
-			var content = g_listItems[i].dataset.content;
-
-			items.push({
-				title : title,
-				date : date,
-				content : content
-			});
-		}
-
-		if(items.length == 0)
-			localStorage.removeItem('items');
-		else
-			localStorage.setItem('items', JSON.stringify(items));
-
-		var a, title, content;
-
-		// If we don't have anything in the list we
-		// have to take care of some stuff
-		if(g_listItems.length == 0) {
-			var nothing = el('h4', 'list-nothing text-center', 'Ekkert í listanum');
-			g_listContainer.appendChild(nothing);
-			g_deleteButton.classList.add('disabled');
-			title = "";
-			content = "";
-		}
-		else {
-			a = document.getElementById(g_selectedId);
-			title = a.dataset.title;
-			content = a.dataset.content;
-		}
-
-		updateCounters(content);
-		updateForm(g_form, title, content);
+			$('#title').val('').focus();
+			$('.entrylist-item').removeClass('active');
+			createTextarea('');
+		});
 	}
 
 	// Counts the words and charaters in the given content string

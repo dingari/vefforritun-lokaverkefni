@@ -74,6 +74,13 @@ nav {
   .checklist-box .glyphicon:hover {
     color: black; }
 
+.saved-entries h4 {
+  display: inline-block; }
+
+.saved-entries .list-icon {
+  margin-right: 0.5em;
+  padding: 0.5em 0; }
+
 .login-wrapper {
   width: 30em;
   margin: 0 auto;
