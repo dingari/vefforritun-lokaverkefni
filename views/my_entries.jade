@@ -10,16 +10,16 @@ block content
 							a(class='list-group-item entrylist-item active',
 								href='/entries/my_entries?id='+item.id,
 								id=item.id,
-								dataset-title=item.title,
-								dataset-content=item.content)
+								data-title=item.title,
+								data-content=item.content)
 									p(class='text-left')= item.date 
 									h4(class='text-left')= item.title
 						else
 							a(class='list-group-item entrylist-item', 
 							href='/entries/my_entries?id='+item.id,
 							id=item.id,
-							dataset-title=item.title,
-							dataset-content=item.content)
+							data-title=item.title,
+							data-content=item.content)
 								p(class='text-left')= item.date 
 								h4(class='text-left')= item.title
 
@@ -30,11 +30,47 @@ block content
 						placeholder='Titill',
 						value = formTitle)
 					input(type='hidden' name='id' value=activeItem)
-				.form-group
-					textarea#content.form-control(name='content', 
-						placeholder='Your stuff here...', 
-						rows='20')
-						= formContent.content
+				.form-group.textarea
+					if formContent.checked
+						.checklist-box
+							.unchecked
+								ul
+									each item, index in formContent.content
+										if !formContent.checked[index]
+											li.checklist-item.list(id='c' + index, data-checked='false')
+												form(action='/entries/my_entries?list=true')
+													span.glyphicon.glyphicon-ok
+														button.checkmark(type='submit')
+													input(type='hidden', name='item'
+															value='{id:' + activeItem + ', index:' + index)
+													input(type='text', name='content', 
+																class='content', value=item)
+
+									li.checklist-item
+										form(action='/entries/my_entries?list=true', id='new-form')
+											span.glyphicon.glyphicon-plus
+												button#new-check(type='submit')
+											input.new-item(type='text', name='foo', 
+													placeholder='Bættu einhverju við',
+													autocomplete='off')
+
+							.checked
+								ul
+									each item, index in formContent.content
+										if formContent.checked[index]
+											li.checklist-item(id='c' + index, data-checked='true')
+												form(action='/entries/my_entries?list=true')
+													span.glyphicon.glyphicon-ok
+														button.checkmark(type='submit')
+													input(type='hidden', name='item'
+															value='{id:' + activeItem + ', index:' + index)
+													input(type='text', name='content', value=item)
+											
+					else
+						textarea#content.form-control(name='content', 
+							placeholder='Your stuff here...', 
+							rows='20')
+							= formContent.content
 				.form-group
 					button#save.btn.btn-primary.btn-lg(type='submit')
 						span.glyphicon.glyphicon-ok
@@ -44,10 +80,17 @@ block content
 						span.glyphicon.glyphicon-remove
 						|  Eyða
 		.sidebar-right.col-md-2
-			form(action='/entries/new' method='post')
-				a#new.btn.btn-info.btn-block(href='/entries/my_entries')
-					span.glyphicon.glyphicon-sunglasses
-					|  Ný færsla
+			.form-group
+				form(action='/entries/new' method='post')
+					a#new.btn.btn-info.btn-block(href='/entries/my_entries')
+						span.glyphicon.glyphicon-sunglasses
+						|  Ný færsla
+			.form-group
+				.btn-group.btn-group-justified(role='group')
+					a.btn.btn-default Memo
+					a.btn.btn-default Listar
+					a.btn.btn-default Bæði
+
 			p.counter
 				span#character-count 0
 				|  stafir

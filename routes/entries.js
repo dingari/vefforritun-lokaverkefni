@@ -25,6 +25,19 @@ router.post('/my_entries', auth.ensureLoggedIn, function(req, res, next) {
 	var owner_id = req.session.user.id || 3;
 	var data = {};
 
+	console.log('islist', req.body.isList);
+
+	if(req.body.isList) {
+		console.log(content);
+
+		content = JSON.parse(content);
+	} else {
+		content = {};
+		content.content = req.body.content;
+	}
+
+	console.log('saving', content)
+
 	entries.saveMemo(id, title, content, owner_id, date, function(error, result) {
 		if(error) {
 			console.error(error);
@@ -35,7 +48,7 @@ router.post('/my_entries', auth.ensureLoggedIn, function(req, res, next) {
 			res.json({
 				id: result,
 				title: title,
-				content: {content: content},
+				content: content,
 				date: date.getDate() + '/' + date.getMonth() + '/' + 
 					(''+date.getFullYear()).substr(2,3) + ' - ' + 
 					date.toTimeString().substr(0,8)
@@ -81,13 +94,20 @@ router.post('/delete', auth.ensureLoggedIn, function(req, res, next) {
 	var id = req.body.id
 	var data = {};
 
-	entries.delete(id, function() {
+	console.log('deleting', id);
 
-		createList(user.id, data, function() {
-			res.render('my_entries', data);
-		})
-	})
-})
+	entries.delete(id, function(error, result) {
+
+		// Ajax call not waning the whole list back
+		if(!!req.body.getList) {
+			res.json({id: result});
+		} else {
+			createList(user.id, data, function() {
+				res.render('my_entries', data);
+			});
+		}
+	});
+});
 
 router.get('/', auth. ensureLoggedIn, function(req, res, next) {
 	var data = {};
@@ -175,6 +195,8 @@ function createFormData(id, data, callback) {
 		} else if(result) {
 			data.formTitle = result.title;
 			data.formContent = result.content;
+
+			console.log(result.content)
 		}
 
 		callback();

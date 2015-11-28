@@ -30,6 +30,50 @@ nav {
   width: 99%;
   max-width: 1200px; }
 
+.checklist-box {
+  border-radius: 13px;
+  background-color: #f0f0f0;
+  min-height: 30em;
+  max-height: 40em;
+  overflow-y: scroll; }
+  .checklist-box ul {
+    padding: 1.5em;
+    list-style-type: none; }
+    .checklist-box ul .checklist-item .glyphicon {
+      float: left;
+      margin-right: 1em;
+      padding: 0.5em 0; }
+    .checklist-box ul .checklist-item input {
+      box-sizing: border-box;
+      width: 80%;
+      border: none;
+      border-bottom: 1px solid #CCC;
+      padding: 0.5em;
+      background-color: #f0f0f0; }
+    .checklist-box ul .checklist-item input:focus {
+      outline-width: 0; }
+    .checklist-box ul .checklist-item button {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      filter: alpha(opacity=0); }
+    .checklist-box ul .checklist-item .fakesubmit {
+      display: none; }
+  .checklist-box .checked * {
+    color: #b0b0b0; }
+  .checklist-box .checked, .checklist-box .unchecked {
+    width: 50%;
+    float: left; }
+  .checklist-box .unchecked .glyphicon-ok {
+    color: #f0f0f0; }
+  .checklist-box .unchecked .glyphicon-plus {
+    color: #b0b0b0; }
+  .checklist-box .glyphicon:hover {
+    color: black; }
+
 .login-wrapper {
   width: 30em;
   margin: 0 auto;
