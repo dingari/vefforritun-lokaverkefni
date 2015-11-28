@@ -5,41 +5,7 @@ document.addEventListener('DOMContentLoaded',function() {
 
 var MyList  = (function() {
 
-	// "Global" variables in this scope
-	var g_saveButton = document.querySelector('button#save');
-	var g_deleteButton = document.querySelector('button#delete');
-	var g_reverseButton = document.querySelector('button#reverse');
-	var g_stripButton = document.querySelector('button#strip');
-
-	var g_listContainer = document.getElementsByClassName('saved-entries')[0];
-	var g_listItems = document.getElementsByClassName('entrylist-item');
-	var g_form = document.getElementById('form');
-	var g_charCount = document.getElementById("character-count");
-	var g_wordCount = document.getElementById("word-count");
-
-	var g_selectedId, g_prevSelectedId;
-
-	////////////////////////
-	/// EVENT LISTENERES ///
-	////////////////////////
-
-	// g_reverseButton.addEventListener('click', function(e) {
-	// 	var values = formValues(g_form);
-	// 	var title = values['title'];
-	// 	var content = values['content'];
-
-	// 	updateForm(g_form, title, reverseString(content));
-	// });
-
-	// g_stripButton.addEventListener('click', function(e) {
-	// 	var values = formValues(g_form);
-	// 	var title = values['title'];
-	// 	var content = values['content'];
-
-	// 	updateForm(g_form, title, content.replace(/<[^>]+>/ig, ''));
-	// })
-
-	g_saveButton.addEventListener('click', function(e) {
+	function saveClick(e) {
 		e.preventDefault();
 
 		var url = location.protocol + '//' + location.host 
@@ -108,11 +74,14 @@ var MyList  = (function() {
 					$('.saved-entries').prepend(a);
 				} 
 
+				var type = (res.content.checked) ? 'list' : 'memo'
+
 				$('#' + res.id)
 					.attr('data-title', res.title)
 					.attr('data-date', res.date)
 					.attr('data-content', JSON.stringify(res.content))
 					.addClass('active')
+					.addClass(type);
 
 				console.log('response', res.content)
 
@@ -122,9 +91,9 @@ var MyList  = (function() {
 			.fail(function() {
 				console.log("AAH SOMETHING WENT TERRIBLY WRONG!!!")
 			});
-	});
+	}
 
-	g_deleteButton.addEventListener('click', function(e) {
+	function deleteClick(e) {
 		e.preventDefault();
 		// if(!e.currentTarget.classList.contains("disabled"))
 		// 	removeListItem(g_selectedId);
@@ -144,13 +113,7 @@ var MyList  = (function() {
 			.fail(function() {
 				console.log('Delete failed');
 			});
-	});
-
-	/*
-	g_form.addEventListener('keyup', function(e) {
-		updateCounters(formValues(g_form)['content']);
-	})
-*/
+	}
 
 	function itemClick() {
 		console.log('click')
@@ -300,13 +263,69 @@ var MyList  = (function() {
 		);
 	}
 
+	// "Global" variables in this scope
+	var g_saveButton = document.querySelector('button#save');
+	var g_deleteButton = document.querySelector('button#delete');
+	var g_reverseButton = document.querySelector('button#reverse');
+	var g_stripButton = document.querySelector('button#strip');
+
+	var g_listContainer = document.getElementsByClassName('saved-entries')[0];
+	var g_listItems = document.getElementsByClassName('entrylist-item');
+	var g_form = document.getElementById('form');
+	var g_charCount = document.getElementById("character-count");
+	var g_wordCount = document.getElementById("word-count");
+
+	var g_selectedId, g_prevSelectedId;
+
+	/*
+	g_form.addEventListener('keyup', function(e) {
+		updateCounters(formValues(g_form)['content']);
+	})
+*/
+	
+
 	//////////////////////
 	/// MAIN FUNCTIONS ///
 	//////////////////////
 
 	function init() {
 		$('.entrylist-item').attr('href', '#');
+		$('#save').on('click', saveClick);
+		$('#delete').on('click', deleteClick);
 		$('.saved-entries').on('click', 'a.entrylist-item', itemClick);
+
+		$('#memobtn').on('click', function(e) {
+			e.preventDefault();
+
+			$('.entrylist-item.memo').css('display', 'block');
+			$('.entrylist-item.list')
+				.css('display', 'none')
+				.removeClass('active');
+		});
+
+		$('#listbtn').on('click', function(e) {
+			e.preventDefault();
+
+			$('.entrylist-item.list').css('display', 'block');
+			$('.entrylist-item.memo')
+				.css('display', 'none')
+				.removeClass('active');
+		}); 
+
+		$('#allbtn').on('click', function(e) {
+			e.preventDefault();
+
+			$('.entrylist-item').css('display', 'block');
+		});
+
+		$('#newlist').on('click', function(e) {
+			e.preventDefault();
+
+			createChecklist({
+				content: '',
+				values: ''
+			});
+		});
 	}
 
 	function updateAndSave() {
@@ -352,100 +371,6 @@ var MyList  = (function() {
 		updateForm(g_form, title, content);
 	}
 
-	function addListItem(titleText, dateText, content) {
-		if(!validateTitle(titleText)) {
-			console.log("That title already exists");
-			return;
-		}
-
-		// If we add to an empty list we must remove the text
-		// saying there's nothing in the list
-		if(g_listContainer.querySelector('.list-nothing'))
-			g_listContainer.removeChild(g_listContainer.firstChild);
-
-		var a = el('a', 'list-group-item entrylist-item', '');
-		var date = el('p', 'text-left', dateText);
-		var title = el('h4', 'text-left', titleText);
-
-		a.appendChild(date);
-		a.appendChild(title);
-
-		// Other attributes
-		a.href = '#';
-		a.id = titleText;
-		a.dataset.title = titleText;
-		a.dataset.date = dateText;
-		a.dataset.content = content;
-
-		g_listContainer.appendChild(a);
-
-		moveToTop(a);
-		setActive(a);
-
-		// We just add an event listener to the item we just created
-		// and is now at the top (first child node)
-		g_listItems[0].addEventListener('click', function(e) {
-			setActive(e.currentTarget);
-			updateAndSave();
-		});
-
-		// We now know that we have something in the list so we should
-		// be able to delete it
-		g_deleteButton.classList.remove('disabled');
-		updateAndSave();
-		return document.getElementById(titleText) !== null;
-	}
-
-	function removeListItem(id) {
-		var toRemove = document.getElementById(id);
-		var nextNode;
-
-		if(toRemove.nextSibling !== null)
-			nextNode = toRemove.nextSibling;
-		else
-			nextNode = toRemove.previousSibling;
-
-		toRemove.parentNode.removeChild(toRemove);
-
-		// We have to take care of some stuff if we
-		// just deleted the last item in the list
-		if(nextNode === null) {
-			g_selectedId = undefined;
-			g_prevSelectedId = undefined;
-		}
-		else
-			setActive(nextNode);
-
-		updateAndSave();
-
-		return document.getElementById(id) === null;
-	}
-
-	function editItem(title, date, content) {
-		var a = document.getElementById(title);
-		if(a !== null) {
-			a.dataset.title = title;
-			a.dataset.date = date;
-			a.dataset.content = content;
-
-			a.firstChild.textContent = date;
-		}
-	}
-
-	// Creates an element with given name, class (optional)
-	// and text (optional)
-	function el(elementName, className, text) {
-		var e = document.createElement(elementName);
-
-		if(className)
-			e.className = className;
-
-		if(text)
-			e.appendChild(document.createTextNode(text));
-
-		return e;
-	}
-
 	// Counts the words and charaters in the given content string
 	// and updates the counters on the site
 	// A word can be any set of characters seperated by any number 
@@ -468,15 +393,6 @@ var MyList  = (function() {
 		return (g_wordCount.textContent === ""+words && g_charCount.textContent === ""+chars);
 	}
 
-	function updateForm(form, title, content) {
-		var inputs = form.getElementsByTagName('input');
-		var textareas = form.getElementsByTagName('textarea');
-
-		inputs[0].value = title;
-		textareas[0].value = content;
-	}
-
-
 	//////////////////////
 	/// MISC FUNCTIONS ///
 	//////////////////////
@@ -495,58 +411,10 @@ var MyList  = (function() {
 		return div;
 	}
 
-	function moveToTop(node) {
-		node.parentNode.insertBefore(node, node.parentNode.firstChild);
-	}
-
-	function setActive(node) {
-		g_prevSelectedId = g_selectedId;
-		g_selectedId = node.id;
-
-		if(g_selectedId === g_prevSelectedId)
-			return;
-
-		node.classList.add('active');
-		var prev = document.getElementById(g_prevSelectedId);
-		if(prev !== null)
-			prev.classList.remove('active');
-	}
-
-	function formValues(form) {
-		var values = {};
-		var inputs = form.getElementsByTagName('input');
-		var textareas = form.getElementsByTagName('textarea');
-
-		values[inputs[0].name] = (inputs[0].value).trim();
-		values[textareas[0].name] = textareas[0].value;
-
-		return values;
-	}
-
-	// The title should be unique and not empty
-	function validateTitle(str) {
-		if(str === "")
-			return false;
-
-		for(var i=0; i< g_listItems.length; i++) {
-			if(str === g_listItems[i].id)
-				return false;
-		}
-
-		return true;
-	}
-
-	function reverseString(str) {
-		for (var i = str.length - 1, o = ''; i >= 0; o += str[i--]) { }
-		return o;
-	}
-
 	// Return an object API with methods to initialize 
 	// an instance and add/remove items
 	return {
-    	init : init,
-    	add : addListItem,
-    	remove : removeListItem
+    	init : init
   	};
 
 })();

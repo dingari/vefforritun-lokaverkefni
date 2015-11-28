@@ -12,12 +12,13 @@ router.get('/my_entries', auth.ensureLoggedIn, function(req, res, next) {
 
 	data.activeItem = req.query.id;
 
-	createList(user.id, data, function() {
+	createList(user.id, data, entries.getByUserIdDesc, function() {
 		res.render('my_entries', data);
 	});
 });
 
-router.post('/my_entries', auth.ensureLoggedIn, function(req, res, next) {
+router.post(['/my_entries', '/my_entries/memos', '/my_entries/lists'], 
+		auth.ensureLoggedIn, function(req, res, next) {
 	var title = req.body.title;
 	var content = req.body.content;
 	var id = req.body.id;
@@ -38,6 +39,15 @@ router.post('/my_entries', auth.ensureLoggedIn, function(req, res, next) {
 
 	console.log('saving', content)
 
+	var func;
+	if(/memos/.test(req.originalUrl)) {
+		func = entries.getMemosByUserId;
+	} else if(/lists/.test(req.originalUrl)) {
+		func = entries.getListsByUserId;
+	} else {
+		func = entries.getByUserIdDesc;
+	}
+
 	entries.saveMemo(id, title, content, owner_id, date, function(error, result) {
 		if(error) {
 			console.error(error);
@@ -55,7 +65,7 @@ router.post('/my_entries', auth.ensureLoggedIn, function(req, res, next) {
 			});
 		} else {
 			data.activeItem = result;
-			createList(owner_id, data, function() {
+			createList(owner_id, data, func, function() {
 				res.render('my_entries', data);
 			});
 		}
@@ -67,23 +77,7 @@ router.post('/new', auth.ensureLoggedIn, function(req, res, next) {
 	var type = req.query.type;
 	var data = {};
 
-	/*
-	if(type !== 'list' ) {
-		entries.saveMemo(null, '', '', user.id, new Date(), function(error, result) {
-			if(error) {
-				console.error(error);
-			}
-
-			data.activeItem = result;
-
-			createList(user.id, data, function() {
-				res.render('my_entries', data);
-			});
-		});
-	}
-	*/
-
-	createList(user.id, data, function() {
+	createList(user.id, data, entries.getByUserIdDesc, function() {
 		res.render('my_entries', data);
 	});
 
@@ -102,14 +96,36 @@ router.post('/delete', auth.ensureLoggedIn, function(req, res, next) {
 		if(!!req.body.getList) {
 			res.json({id: result});
 		} else {
-			createList(user.id, data, function() {
+			createList(user.id, data, entries.getByUserIdDesc, function() {
 				res.render('my_entries', data);
 			});
 		}
 	});
 });
 
-router.get('/', auth. ensureLoggedIn, function(req, res, next) {
+router.get('/my_entries/memos', auth.ensureLoggedIn, function(req, res, next) {
+	var user = req.session.user;
+	var data = {};
+	data.path = '/memos';
+	data.activeItem = req.query.id;
+
+	createList(user.id, data, entries.getMemosByUserId, function() {
+		res.render('my_entries', data);
+	});
+});
+
+router.get('/my_entries/lists', auth.ensureLoggedIn, function(req, res, next) {
+	var user = req.session.user;
+	var data = {};
+	data.path = '/lists';
+	data.activeItem = req.query.id;
+
+	createList(user.id, data, entries.getListsByUserId, function() {
+		res.render('my_entries', data);
+	});
+});
+
+router.get('/', auth.ensureLoggedIn, function(req, res, next) {
 	var data = {};
 
 	// Birta yfirlit yfir nýjustu "public" færslurnar?
@@ -203,13 +219,15 @@ function createFormData(id, data, callback) {
 	});
 }
 
-function createList(userId, data, callback) {
-	entries.getByUserIdDesc(userId, function(error, result) {
+function createList(userId, data, func, callback) {
+	func(userId, function(error, result) {
 		if(error) {
 			console.error(error);
 		}
 
 		data.list = result;
+		if(!data.path)
+			data.path = '';
 
 		createFormData(data.activeItem, data, callback);
 	});

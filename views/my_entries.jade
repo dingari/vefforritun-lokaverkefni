@@ -6,25 +6,25 @@ block content
 			.list-group.saved-entries(role='group')
 				if (list)	
 					each item, index in list
+						- klass = 'list-group-item entrylist-item'
 						if (activeItem == item.id)
-							a(class='list-group-item entrylist-item active',
-								href='/entries/my_entries?id='+item.id,
-								id=item.id,
-								data-title=item.title,
-								data-content=item.content)
-									p(class='text-left')= item.date 
-									h4(class='text-left')= item.title
+							- klass += ' active'
+						if (item.content.checked)
+							- klass += ' list'
 						else
-							a(class='list-group-item entrylist-item', 
-							href='/entries/my_entries?id='+item.id,
+							- klass += ' memo'
+
+						a(class=klass, 
+							href='/entries/my_entries' + path + '?id='+item.id,
 							id=item.id,
 							data-title=item.title,
 							data-content=item.content)
 								p(class='text-left')= item.date 
 								h4(class='text-left')= item.title
+							
 
 		.textsection.col-md-8
-			form#form(action='/entries/my_entries', method='post')
+			form#form(action='/entries/my_entries' + path, method='post')
 				.form-group
 					input#title.form-control(name='title', 
 						placeholder='Titill',
@@ -86,10 +86,15 @@ block content
 						span.glyphicon.glyphicon-sunglasses
 						|  Ný færsla
 			.form-group
+				form
+					a#newlist.btn.btn-info.btn-block(href='/entries/my_entries?list=new')
+						span.glyphicon.glyphicon-sunglasses
+							|  Nýr checklist
+			.form-group
 				.btn-group.btn-group-justified(role='group')
-					a.btn.btn-default Memo
-					a.btn.btn-default Listar
-					a.btn.btn-default Bæði
+					a.btn.btn-default#memobtn(href='/entries/my_entries/memos') Memo
+					a.btn.btn-default#listbtn(href='/entries/my_entries/lists') Listar
+					a.btn.btn-default#allbtn(href='/entries/my_entries') Allt
 
 			p.counter
 				span#character-count 0
