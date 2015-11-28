@@ -2,7 +2,7 @@ extends layout
 
 block content
 	.row
-		.col-md-2
+		.col-md-2.col-sm-3
 			.list-group.saved-entries(role='group')
 				if (list)	
 					each item, index in list
@@ -27,7 +27,7 @@ block content
 								span(class = icon)
 								h4(class='text-left')= item.title
 
-		.textsection.col-md-8
+		.textsection.col-md-8.col-sm-6
 			form#form(action='/entries/my_entries' + path, method='post')
 				.form-group
 					input#title.form-control(name='title', 
@@ -90,7 +90,7 @@ block content
 						span.glyphicon.glyphicon-remove
 						|  Eyða
 
-		.sidebar-right.col-md-2
+		.sidebar-right.col-md-2.col-sm-3
 			.form-group
 				form(action='/entries/new' method='post')
 					a#new.btn.btn-info.btn-block(href='/entries/my_entries')

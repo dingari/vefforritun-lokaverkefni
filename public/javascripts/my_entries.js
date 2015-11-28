@@ -157,9 +157,14 @@ var MyList  = (function() {
 					next = $('#' + response.id).prev();
 				}
 
-				next.addClass('active');
+				$.each($(next), itemClick);
 				$('#' + response.id).slideUp(400, function() {
 					$(this).remove();
+
+					if(next.length === 0) {
+						$('#title').html('');
+						createTextarea({content: ''});
+					}
 				});
 			})
 			.fail(function() {
