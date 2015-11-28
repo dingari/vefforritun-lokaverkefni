@@ -125,6 +125,19 @@ router.get('/my_entries/lists', auth.ensureLoggedIn, function(req, res, next) {
 	});
 });
 
+router.get('/entries', auth.ensureLoggedIn, function(req, res, next) {
+	var user = req.session.user;
+	var data = {};
+
+	entries.findAllPublicDesc(function(error, result) {
+		if(error) {
+			console.error(error);
+		}
+
+		res.render('all_entries')
+	})
+});
+
 router.get('/', auth.ensureLoggedIn, function(req, res, next) {
 	var data = {};
 

@@ -85,6 +85,11 @@ block content
 					button#save.btn.btn-primary.btn-lg(type='submit')
 						span.glyphicon.glyphicon-ok
 						|  Vista
+					.checkbox-inline
+						label
+							input(type='checkbox', name='public', value='true', 
+										class='checkbox')
+							| Þessi færsla er public
 					button#delete.btn.btn-warning.pull-right(type='submit',
 							formaction='/entries/delete')
 						span.glyphicon.glyphicon-remove

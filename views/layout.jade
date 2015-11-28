@@ -2,7 +2,8 @@ doctype html
 html
 	head
 		title= title
-		link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+		//- link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
 		
 		link(rel='stylesheet', href='/stylesheets/style.css')
 	body
@@ -39,5 +40,9 @@ html
 			
 			block content
 
-		script(src='/bower_components/jquery/dist/jquery.min.js')
-		script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+		//- script(src='/bower_components/jquery/dist/jquery.min.js')
+		//- script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+
+		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
