@@ -43,6 +43,11 @@ nav {
       float: left;
       margin-right: 1em;
       padding: 0.5em 0; }
+    .checklist-box ul .checklist-item .glyphicon-remove {
+      float: right;
+      color: #b0b0b0; }
+    .checklist-box ul .checklist-item .glyphicon-remove:hover {
+      color: black; }
     .checklist-box ul .checklist-item input {
       box-sizing: border-box;
       width: 80%;
@@ -80,6 +85,12 @@ nav {
 .saved-entries .list-icon {
   margin-right: 0.5em;
   padding: 0.5em 0; }
+
+.saved-entries .initially-hidden {
+  display: none; }
+
+.message {
+  display: none; }
 
 .login-wrapper {
   width: 30em;

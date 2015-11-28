@@ -44,11 +44,14 @@ block content
 											li.checklist-item.list(id='c' + index, data-checked='false')
 												form(action='/entries/my_entries?list=true')
 													span.glyphicon.glyphicon-ok
-														button.checkmark(type='submit')
+														button.checkmark(type='submit', class='checkmark')
 													input(type='hidden', name='item'
 															value='{id:' + activeItem + ', index:' + index)
 													input(type='text', name='content', 
 																class='content', value=item)
+													span.glyphicon.glyphicon-remove
+														button.checkmark(type='submit', 
+																							class='check-remove')
 
 									li.checklist-item
 										form(action='/entries/my_entries?list=true', id='new-form')
@@ -75,7 +78,10 @@ block content
 							placeholder='Your stuff here...', 
 							rows='20')
 							= formContent.content
-				.form-group
+				.form-group.message
+					if alert
+						p= alert
+				.form-group.buttons
 					button#save.btn.btn-primary.btn-lg(type='submit')
 						span.glyphicon.glyphicon-ok
 						|  Vista
@@ -83,6 +89,7 @@ block content
 							formaction='/entries/delete')
 						span.glyphicon.glyphicon-remove
 						|  Eyða
+
 		.sidebar-right.col-md-2
 			.form-group
 				form(action='/entries/new' method='post')

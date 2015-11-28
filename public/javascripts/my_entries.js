@@ -60,6 +60,7 @@ var MyList  = (function() {
 
 				// Make it if it doesn't exist
 				if($('#' + res.id).length === 0) {
+					var isNew = true;
 					var a = $('<a />', {
 						id: res.id,
 						href: '#',
@@ -71,8 +72,12 @@ var MyList  = (function() {
 					var h = $('<h4></h4>', {class: 'text-left'});
 
 					a.append(p).append(s).append(h);
+					//a.addClass('initially-hidden');
 
 					$('.saved-entries').prepend(a);
+					$(a).slideDown(400, function() {
+						console.log('donw')
+					});
 				} 
 
 				var type, icon;
@@ -96,10 +101,36 @@ var MyList  = (function() {
 
 				$('#' + res.id + ' p').html(res.date);
 				$('#' + res.id + ' h4').html(res.title);
+
+				if(!isNew) {
+					showMessage('Færslan var vistuð', 'success', 3000);
+				}
 			})
 			.fail(function() {
-				console.log("AAH SOMETHING WENT TERRIBLY WRONG!!!")
+				$('.message').append(
+					$('<div></div>').addClass('alert alert-danger').append(
+						$('<p></p>').html('Ekki tókst að vista færsluna')
+					)
+				);
 			});
+	}
+
+	function showMessage(message, type, duration, fade) {
+		if(!fade) {
+			fade = 400;
+		}
+
+		$('.message').append(
+			$('<div></div>').addClass('alert alert-' + type).append(
+				$('<p></p>').html(message)
+			)
+		).fadeIn(fade);
+
+		window.setTimeout(function() {
+			$('.message').fadeOut(fade, function() {
+				$(this).find('.alert').remove();
+			});
+		}, duration);
 	}
 
 	function deleteClick(e) {
@@ -127,7 +158,9 @@ var MyList  = (function() {
 				}
 
 				next.addClass('active');
-				$('#' + response.id).remove();
+				$('#' + response.id).slideUp(400, function() {
+					$(this).remove();
+				});
 			})
 			.fail(function() {
 				console.log('Delete failed');
@@ -245,6 +278,11 @@ var MyList  = (function() {
 
 		$('.checklist-box').on('click', '.checkmark', checkClick);
 		$('.checklist-box').on('click', '#new-check', newCheckitemClick);
+		$('.checklist-box').on('click', '.check-remove', function(e) {
+			e.preventDefault();
+
+			$(this).closest('.checklist-item').remove();
+		});
 	}
 
 	function createChecklistItem(index, value, checked) {
@@ -253,6 +291,8 @@ var MyList  = (function() {
 			.addClass('checklist-item list');
 		var span = $('<span></span>', {class: 'glyphicon glyphicon-ok'})
 			.append($('<button></button>', {type: 'submit', class: 'checkmark'}));
+		var span_rem = $('<span></span>', {class: 'glyphicon glyphicon-remove'})
+			.append($('<button></button>', {type: 'submit', class: 'check-remove'}));
 		var form = $('<form></form>', {action: '/entries/my_entries?list=true'})
 			.append(span)
 			.append($('<input></input>', {
@@ -265,7 +305,8 @@ var MyList  = (function() {
 				name: 'content',
 				value: value,
 				class: 'content'
-			}));
+			}))
+			.append(span_rem);
 
 		return li.append(form);
 	}
