@@ -47,6 +47,8 @@ function signupHandler(req, res, next) {
 
 			var success = true;
 
+			console.log('id', id)
+
 			if(error || !id) {
 				success = false;
 				
@@ -71,7 +73,7 @@ function signupHandler(req, res, next) {
 }
 
 function loginHandler(req, res, next) {
-	var username = xss(req.body.username);
+	var username = xss(req.body.username.toLowerCase());
 	var password = xss(req.body.password);
 
 	users.auth(username, password, function(error, user) {
