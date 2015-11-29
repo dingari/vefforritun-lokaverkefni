@@ -281,6 +281,8 @@ var MyList  = (function() {
 			)
 		);
 
+		$('.checklist-item input').attr('autocomplete', 'off')
+
 		$('.checklist-box').on('click', '.checkmark', checkClick);
 		$('.checklist-box').on('click', '#new-check', newCheckitemClick);
 		$('.checklist-box').on('click', '.check-remove', function(e) {
@@ -363,6 +365,7 @@ var MyList  = (function() {
 			e.preventDefault();
 
 			$('.entrylist-item.memo').css('display', 'block');
+			$.each($($('.entrylist-item.memo').get(0)), itemClick);
 			$('.entrylist-item.list')
 				.css('display', 'none')
 				.removeClass('active');
@@ -372,6 +375,7 @@ var MyList  = (function() {
 			e.preventDefault();
 
 			$('.entrylist-item.list').css('display', 'block');
+			$.each($($('.entrylist-item.list').get(0)), itemClick);
 			$('.entrylist-item.memo')
 				.css('display', 'none')
 				.removeClass('active');
