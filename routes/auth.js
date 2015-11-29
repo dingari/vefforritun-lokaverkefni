@@ -105,11 +105,3 @@ function logout(req, res, next) {
 }
 
 module.exports = router;
-
-module.exports.ensureLoggedIn = function(req, res, next) {
-	if(req.session.user) {
-		next();
-	} else {
-		res.redirect('/restricted');
-	}
-};

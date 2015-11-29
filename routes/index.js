@@ -4,9 +4,10 @@ var express = require('express');
 var router = express.Router();
 var entries = require('../lib/entries_db');
 var auth = require('../routes/auth.js');
+var ensureLoggedIn = require('../middleware/loggedin');
 
 /* GET home page. */
-router.get('/', auth.ensureLoggedIn, function(req, res, next) {
+router.get('/', ensureLoggedIn, function(req, res, next) {
 	var data = {title: 'Lokaverkefni'};
 
 	res.redirect('/entries/my_entries');

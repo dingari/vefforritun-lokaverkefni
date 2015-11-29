@@ -6,12 +6,13 @@ var users = require('../lib/users_db');
 var entries = require('../routes/entries');
 var auth = require('../routes/auth');
 var usersearch = require('../middleware/usersearch');
+var ensureLoggedIn = require('../middleware/loggedin');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
 	res.send('respond with a resource');
 });
 
-router.post('/search', [auth.ensureLoggedIn, usersearch], entries.renderList);
+router.post('/search', [ensureLoggedIn, usersearch], entries.renderList);
 
 module.exports = router;

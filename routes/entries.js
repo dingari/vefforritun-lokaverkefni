@@ -3,100 +3,21 @@
 var express = require('express');
 var router = express.Router();
 var entries = require('../lib/entries_db');
-var auth = require('../routes/auth');
 var xss = require('xss');
 var share = require('../middleware/share');
+var ensureLoggedIn = require('../middleware/loggedin');
+var ops = require('../middleware/entryoperations');
 
-router.get('/my_entries', auth.ensureLoggedIn, renderList);
+router.get('/my_entries', ensureLoggedIn, renderList);
+
+router.post('/new', [ensureLoggedIn, ops.new], renderList);
+
+router.post('/delete', [ensureLoggedIn, ops.delete], renderList);
 
 router.post(['/my_entries', '/my_entries/memos', '/my_entries/lists'], 
-		auth.ensureLoggedIn, function(req, res, next) {
-	var title = req.body.title;
-	var content = req.body.content;
-	var id = req.body.id;
-	var date = new Date();
-	var owner_id = req.session.user.id || 3;
-	var data = {};
-	var page = 1;
+		[ensureLoggedIn, ops.save], renderList);
 
-	console.log('islist', req.body.isList);
-
-	if(req.body.isList) {
-		console.log(content);
-
-		content = JSON.parse(content);
-	} else {
-		content = {};
-		content.content = req.body.content;
-	}
-
-	console.log('saving', content)
-
-	var func;
-	if(/memos/.test(req.originalUrl)) {
-		func = entries.getMemosByUserId;
-	} else if(/lists/.test(req.originalUrl)) {
-		func = entries.getListsByUserId;
-	} else {
-		func = entries.findAllByUserId;
-	}
-
-	entries.saveMemo(id, title, content, owner_id, date, function(error, result) {
-		if(error) {
-			console.error(error);
-		}
-
-		// Ajax call that does not want the whole list back
-		if(req.body.getList === 'false') {
-			res.json({
-				id: result,
-				title: title,
-				content: content,
-				date: date.getDate() + '/' + date.getMonth() + '/' + 
-					(''+date.getFullYear()).substr(2,3) + ' - ' + 
-					date.toTimeString().substr(0,8)
-			});
-		} else {
-			data.activeItem = result;
-			createList(owner_id, data, page, func, function() {
-				res.render('my_entries', data);
-			});
-		}
-	});
-});
-
-router.post('/new', auth.ensureLoggedIn, function(req, res, next) {
-	var user = req.session.user;
-	var type = req.query.type;
-	var data = {};
-
-	createList(user.id, data, entries.findAllByUserId, function() {
-		res.render('my_entries', data);
-	});
-
-});
-
-router.post('/delete', auth.ensureLoggedIn, function(req, res, next) {
-	var user = req.session.user;
-	var id = req.body.id
-	var data = {};
-
-	console.log('deleting', id);
-
-	entries.delete(id, function(error, result) {
-
-		// Ajax call not waning the whole list back
-		if(!!req.body.getList) {
-			res.json({id: result});
-		} else {
-			createList(user.id, data, entries.findAllByUserId, function() {
-				res.render('my_entries', data);
-			});
-		}
-	});
-});
-
-router.get('/my_entries/memos', auth.ensureLoggedIn, function(req, res, next) {
+router.get('/my_entries/memos', ensureLoggedIn, function(req, res, next) {
 	var user = req.session.user;
 	var data = {};
 	var page = 1;
@@ -108,7 +29,7 @@ router.get('/my_entries/memos', auth.ensureLoggedIn, function(req, res, next) {
 	});
 });
 
-router.get('/my_entries/lists', auth.ensureLoggedIn, function(req, res, next) {
+router.get('/my_entries/lists', ensureLoggedIn, function(req, res, next) {
 	var user = req.session.user;
 	var data = {};
 	var page = 1;
@@ -120,7 +41,7 @@ router.get('/my_entries/lists', auth.ensureLoggedIn, function(req, res, next) {
 	});
 });
 
-router.get('/entries', auth.ensureLoggedIn, function(req, res, next) {
+router.get('/entries', ensureLoggedIn, function(req, res, next) {
 	var user = req.session.user;
 	var data = {};
 
@@ -133,7 +54,7 @@ router.get('/entries', auth.ensureLoggedIn, function(req, res, next) {
 	})
 });
 
-router.get('/user/:userid', function(req, res, next) {
+router.get('/user/:userid', ensureLoggedIn, function(req, res, next) {
 	var user_id = parseInt(req.params.userid);
 	var page = 1;
 	var data = {}
@@ -169,7 +90,7 @@ router.get('/user/:userid', function(req, res, next) {
 
 });
 
-router.post('/share', [auth.ensureLoggedIn, share], renderList);
+router.post('/share', [ensureLoggedIn, share], renderList);
 
 function createFormData(id, data, callback) {
 	data.formContent = {};
@@ -210,7 +131,7 @@ function renderList(req, res, next) {
 	var data = {title: 'Listinn'};
 	var page = 1;
 
-	data.activeItem = req.query.id || req.body.id;
+	data.activeItem = req.query.id || req.body.id || req.activeItem;
 	data.userlist = req.userlist;
 
 	entries.getUsersSharedWith(data.activeItem, function(error, result) {
