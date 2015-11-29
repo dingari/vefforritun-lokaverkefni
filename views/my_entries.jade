@@ -85,11 +85,11 @@ block content
 					button#save.btn.btn-primary.btn-lg(type='submit')
 						span.glyphicon.glyphicon-ok
 						|  Vista
-					.checkbox-inline
-						label
-							input(type='checkbox', name='public', value='true', 
-										class='checkbox')
-							| Þessi færsla er public
+					//- .checkbox-inline
+					//- 	label
+					//- 		input(type='checkbox', name='public', value='true', 
+					//- 					class='checkbox')
+					//- 		| Þessi færsla er public
 					button#delete.btn.btn-warning.pull-right(type='submit',
 							formaction='/entries/delete')
 						span.glyphicon.glyphicon-remove
@@ -105,7 +105,7 @@ block content
 				form
 					a#newlist.btn.btn-info.btn-block(href='/entries/my_entries?list=new')
 						span.glyphicon.glyphicon-sunglasses
-							|  Nýr checklist
+						|  Nýr checklist
 			.form-group
 				.btn-group.btn-group-justified(role='group')
 					a.btn.btn-default#memobtn(href='/entries/my_entries/memos') Memo
@@ -118,6 +118,22 @@ block content
 			p.counter
 				span#word-count 0
 				|  orð
+
+			.form-group
+				p Deila með
+				if userlist
+					.form-group
+						ul
+							each user, index in userlist
+								li
+									a(href='/users/' + user.id) 
+										=user.username
+				form.form(action='/users/search', method='post', role='form')
+					.form-group
+						input.form-control(type='text', name='username')
+					.form-group
+						button.btn.btn-default(type='submit')
+							| Leita
 			//- button#strip.btn.btn-info.btn-block
 			//- 	span.glyphicon.glyphicon-flash
 			//- 	|  Hreinsa HTML
