@@ -126,16 +126,26 @@ block content
 						ul
 							each user, index in userlist
 								li
-									form(action='/entries/share')
+									form(action='/entries/share', method='post')
 										input(type='hidden', name='user_id', value=user.id)
+										input(type='hidden', name='id', value=activeItem)
 										button.button-link(type='submit') 
 											=user.username
 				form.form(action='/users/search', method='post', role='form')
 					.form-group
-						input.form-control(type='text', name='username')
+						input.form-control(type='text', name='username', 
+								placeholder='Leitaðu að notanda')
+						input(type='hidden', name='id', value=activeItem)
 					.form-group
 						button.btn.btn-default(type='submit')
 							| Leita
+			.form-group.shared-with
+				if sharelist
+					p Þú ert að deila þessari færslu með
+						ul
+							each user, index in sharelist
+								li
+									=user.username
 			//- button#strip.btn.btn-info.btn-block
 			//- 	span.glyphicon.glyphicon-flash
 			//- 	|  Hreinsa HTML

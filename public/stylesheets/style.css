@@ -119,8 +119,8 @@ nav {
     width: 70%;
     margin: 0 auto; }
 
-.share ul {
+.share ul, .shared-with ul {
   padding-left: 1em; }
 
-.share li {
+.share li, .shared-with li {
   padding: 0.2em 0; }
