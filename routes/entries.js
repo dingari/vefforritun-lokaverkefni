@@ -17,42 +17,9 @@ router.post('/delete', [ensureLoggedIn, ops.delete], renderList);
 router.post(['/my_entries', '/my_entries/memos', '/my_entries/lists'], 
 		[ensureLoggedIn, ops.save], renderList);
 
-router.get('/my_entries/memos', ensureLoggedIn, function(req, res, next) {
-	var user = req.session.user;
-	var data = {};
-	var page = 1;
-	data.path = '/memos';
-	data.activeItem = req.query.id;
+router.get('/my_entries/memos', [ensureLoggedIn, ops.memoList], renderList);
 
-	createList(user.id, data, page, entries.getMemosByUserId, function() {
-		res.render('my_entries', data);
-	});
-});
-
-router.get('/my_entries/lists', ensureLoggedIn, function(req, res, next) {
-	var user = req.session.user;
-	var data = {};
-	var page = 1;
-	data.path = '/lists';
-	data.activeItem = req.query.id;
-
-	createList(user.id, data, page, entries.getListsByUserId, function() {
-		res.render('my_entries', data);
-	});
-});
-
-router.get('/entries', ensureLoggedIn, function(req, res, next) {
-	var user = req.session.user;
-	var data = {};
-
-	entries.findAllPublicDesc(function(error, result) {
-		if(error) {
-			console.error(error);
-		}
-
-		res.render('all_entries')
-	})
-});
+router.get('/my_entries/lists', [ensureLoggedIn, ops.listList], renderList);
 
 router.get('/user/:userid', ensureLoggedIn, function(req, res, next) {
 	var user_id = parseInt(req.params.userid);
@@ -111,6 +78,7 @@ function createFormData(id, data, callback) {
 }
 
 function createList(userId, data, page, func, callback) {
+	console.log(func)
 	func(userId, page, true, function(error, result) {
 		if(error) {
 			console.error(error);
@@ -130,10 +98,13 @@ function renderList(req, res, next) {
 	var user = req.session.user;
 	var data = {title: 'Listinn'};
 	var page = 1;
+	var listFunc = req.listFunc || entries.findAllByUserId;
 
 	data.activeItem = req.query.id || req.body.id || req.activeItem;
 	data.userlist = req.userlist;
+	data.path = req.thepath;
 
+	console.log('active', data.activeItem)
 	entries.getUsersSharedWith(data.activeItem, function(error, result) {
 		if(error) {
 			console.error(error);
@@ -143,7 +114,7 @@ function renderList(req, res, next) {
 			data.sharelist = result;
 		}
 
-		createList(user.id, data, page, entries.findAllByUserId, function() {
+		createList(user.id, data, page, listFunc, function() {
 			res.render('my_entries', data);
 		});
 	});

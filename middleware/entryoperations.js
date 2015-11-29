@@ -84,3 +84,25 @@ module.exports.save = function(req, res, next) {
 		}
 	});
 }
+
+module.exports.memoList = function(req, res, next) {
+	var user = req.session.user;
+	var data = {};
+	var page = 1;
+	req.thepath = '/memos';
+	req.activeItem = req.query.id;
+	req.listFunc = entries.getMemosByUserId;
+
+	next();
+}
+
+module.exports.listList = function(req, res, next) {
+	var user = req.session.user;
+	var data = {};
+	var page = 1;
+	req.thepath = '/lists';
+	req.activeItem = req.query.id;
+	req.listFunc = entries.getListsByUserId;
+
+	next();
+}
