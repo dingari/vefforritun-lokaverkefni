@@ -119,15 +119,17 @@ block content
 				span#word-count 0
 				|  orð
 
-			.form-group
+			.form-group.share
 				p Deila með
 				if userlist
 					.form-group
 						ul
 							each user, index in userlist
 								li
-									a(href='/users/' + user.id) 
-										=user.username
+									form(action='/entries/share')
+										input(type='hidden', name='user_id', value=user.id)
+										button.button-link(type='submit') 
+											=user.username
 				form.form(action='/users/search', method='post', role='form')
 					.form-group
 						input.form-control(type='text', name='username')

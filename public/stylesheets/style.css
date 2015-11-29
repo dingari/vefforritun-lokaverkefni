@@ -2,8 +2,23 @@ body {
   padding: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
 
-a {
+.button-link {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+  font: inherit;
+  /*border is optional*/
+  cursor: pointer; }
+
+.button-link:hover {
+  color: #444;
+  border-bottom: 1px solid #444; }
+
+a, .button-link {
   color: #008FFF; }
+
+ul {
+  list-style-type: none; }
 
 nav {
   padding: 0 10% 0 10%; }
@@ -103,3 +118,9 @@ nav {
   .login-wrapper .login-box {
     width: 70%;
     margin: 0 auto; }
+
+.share ul {
+  padding-left: 1em; }
+
+.share li {
+  padding: 0.2em 0; }
