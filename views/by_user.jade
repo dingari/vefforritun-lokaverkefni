@@ -1,0 +1,13 @@
+extends layout
+
+block content
+	h1= 'Færslur notanda foo'
+	if (list)
+		.list-group
+			each item, index in list
+				a(class='list-group-item' 
+					href='/entries/' +item.id,
+					id=item.id)
+						p(class='text-left')= item.date 
+						span(class = icon)
+						h4(class='text-left')= item.title
