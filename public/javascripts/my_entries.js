@@ -424,12 +424,31 @@ var MyList  = (function() {
 
 	function shareClick(e) {
 		e.preventDefault();
+
+		console.log('sharing is caring	');
+
+		var user_id = $(this).attr('id');
 		var url = location.protocol + '//' + location.host 
 			+ '/entries/share';
-		var user_id = $(this).attr('id');
-		var id = $('.entrylist-item.active').attr('id');
+		
+		sharePOST(user_id, url);
+	}
 
-		console.log('sharing', id, 'with', user_id);
+	function unshareClick(e) {
+		e.preventDefault();
+
+		console.log('i aint your buddy pal')
+
+		var user_id = $(this).attr('id');
+		var url = location.protocol + '//' + location.host 
+			+ '/entries/unshare';
+		
+		sharePOST(user_id, url);
+	}
+
+	function sharePOST(user_id, url) {
+		
+		var id = $('.entrylist-item.active').attr('id');
 
 		$.ajax({
 			type: 'POST',
@@ -448,13 +467,14 @@ var MyList  = (function() {
 			})
 			.fail(function(res) {
 				console.log('Request failed', res)
-			})
+			});
 	}
 
 	function createShareList(content) {
 		var list = $('.shared-with ul');
 		$('.shared-with').html('')
 
+		console.log(content)
 		if(content.length === 0) {
 			return;
 		}
@@ -467,7 +487,34 @@ var MyList  = (function() {
 
 		for(var i in content) {
 			$('.shared-with ul').append(
-				$('<li></li>').html(content[i].username)
+				$('<li></li>').append(
+					$('<form></form>', {
+						action: '/entries/unshare',
+						method: 'post'
+					}).append(
+						$('<input></input>', {
+							type: 'hidden',
+							name: 'user_id',
+							value: content[i].id
+						})
+					).append(
+						$('<input></input>', {
+							type: 'hidden',
+							name: 'id',
+							value: $('entrylist-item.active').attr('id')
+						})
+					).append(
+						$('<span></span>', {
+							class: 'glyphicon glyphicon-remove'
+						}).append(
+							$('<button></button>', {
+								type: 'submit',
+								class: 'check-remove',
+								id: content[i].id
+							})
+						)
+					).append(content[i].username)
+				)
 			);
 		}
 	}
@@ -485,6 +532,7 @@ var MyList  = (function() {
 
 		$('.usersearch').on('keyup', userSearch);
 		$('.share').on('click', 'a', shareClick);
+		$('.shared-with').on('click', 'button', unshareClick);
 
 		$('#memobtn').on('click', function(e) {
 			e.preventDefault();

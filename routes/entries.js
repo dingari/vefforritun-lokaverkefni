@@ -24,6 +24,8 @@ router.get('/my_entries/lists', [ensureLoggedIn, ops.listList], renderList);
 
 router.post('/share', [ensureLoggedIn, ops.share], renderList);
 
+router.post('/unshare', [ensureLoggedIn, ops.unshare], renderList);
+
 router.get('/share', [ensureLoggedIn, ops.getShareList], function(req, res, next) {
 	console.log(req.sharelist);
 	res.json(req.sharelist);
@@ -155,7 +157,8 @@ function renderList(req, res, next) {
 		}
 
 		if(req.body.async === 'true') {
-			res.json(data.sharelist);
+			var send = data.sharelist || [];
+			res.json(send);
 		} else {
 			createList(user.id, data, page, listFunc, function() {
 				res.render('my_entries', data);

@@ -128,3 +128,20 @@ input:disabled, textarea:disabled {
 
 .share li, .shared-with li {
   padding: 0.2em 0; }
+
+.shared-with ul button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  filter: alpha(opacity=0); }
+
+.shared-with ul .glyphicon-remove {
+  margin-right: 0.5em;
+  padding: 0.2em 0;
+  color: #b0b0b0; }
+
+.shared-with ul .glyphicon-remove:hover {
+  color: black; }

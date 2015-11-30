@@ -138,7 +138,14 @@ block content
 					ul
 						each user, index in sharelist
 							li
-								=user.username
+								form(action='/entries/unshare', method='post')
+									input(type='hidden', name='user_id', value=user.id)
+									input(type='hidden', name='id', value=activeItem)
+									span.glyphicon.glyphicon-remove
+										button(type='submit', 
+																			class='check-remove')
+									=user.username
+									
 			//- button#strip.btn.btn-info.btn-block
 			//- 	span.glyphicon.glyphicon-flash
 			//- 	|  Hreinsa HTML

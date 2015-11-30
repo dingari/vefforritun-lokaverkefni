@@ -114,6 +114,21 @@ module.exports.share = function(req, res, next) {
 	});
 };
 
+module.exports.unshare = function(req, res, next) {
+	var user_id = req.body.user_id;
+	var id = req.body.id;
+
+	console.log(user_id, id)
+
+	entries.setUserShareStatus(id, user_id, false, function(error, result) {
+		if(error) {
+			console.error(error);
+		} 
+
+		next();
+	});
+};
+
 module.exports.getShareList = function(req, res, next) {
 	console.log(req.query.id)
 	entries.getUsersSharedWith(req.query.id, function(error, result) {
