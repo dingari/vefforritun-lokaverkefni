@@ -34,7 +34,7 @@ module.exports.save = function(req, res, next) {
 	var content = req.body.content;
 	var id = req.body.id;
 	var date = new Date();
-	var owner_id = req.session.user.id || 3;
+	var owner_id = req.session.user.id;
 	var data = {};
 	var page = 1;
 	var list;
@@ -52,7 +52,7 @@ module.exports.save = function(req, res, next) {
 		list = false;
 	}
 
-	console.log('saving', content)
+	console.log('saving', content, id, list);
 
 	var func;
 	if(/memos/.test(req.originalUrl)) {

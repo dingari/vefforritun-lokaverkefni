@@ -24,8 +24,23 @@ router.get('/my_entries/lists', [ensureLoggedIn, ops.listList], renderList);
 router.post('/share', [ensureLoggedIn, ops.share], renderList);
 
 router.get('/share', [ensureLoggedIn, ops.getShareList], function(req, res, next) {
-	console.log(req.sharelist)
-	res.json(req.sharelist)
+	console.log(req.sharelist);
+	res.json(req.sharelist);
+});
+
+router.get('/shared/:userid', ensureLoggedIn, function(req, res, next) {
+	var user_id = parseInt(req.params.userid);
+	var data = {};
+
+	entries.findAllSharedWith(user_id, 1, function(error, result) {
+		if(error) {
+			console.error(error);
+		}
+
+		data.list = result;
+
+		res.render('shared_list', data);
+	})
 });
 
 router.get('/user/:userid', ensureLoggedIn, function(req, res, next) {
@@ -62,6 +77,15 @@ router.get('/user/:userid', ensureLoggedIn, function(req, res, next) {
 		});
 	}
 
+});
+
+router.get('/:entryid', ensureLoggedIn, function(req, res, next) {
+	var id = req.params.entryid;
+
+	var data = {};
+	createFormData(id, data, function() {
+		res.render('entry_static', data);
+	});
 });
 
 function createFormData(id, data, callback) {
