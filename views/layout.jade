@@ -17,11 +17,7 @@ html
 							if (session.user)
 								li
 									a(href='/entries/shared/' + session.user.id) 
-										| Færslur
-								li
-									a(href='/users') Notendur
-								li 
-									a(href='/search') Leita
+										| Deilt með mér
 
 						ul(class='user-nav')
 							if (session.user)

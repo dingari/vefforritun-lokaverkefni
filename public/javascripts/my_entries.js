@@ -520,10 +520,6 @@ var MyList  = (function() {
 	}
 	
 
-	//////////////////////
-	/// MAIN FUNCTIONS ///
-	//////////////////////
-
 	function init() {
 		$('.entrylist-item').attr('href', '#');
 		$('#save').on('click', saveClick);
@@ -578,46 +574,6 @@ var MyList  = (function() {
 			$('.entrylist-item').removeClass('active');
 			createTextarea('');
 		});
-	}
-
-	// Counts the words and charaters in the given content string
-	// and updates the counters on the site
-	// A word can be any set of characters seperated by any number 
-	// of whitespace characters
-	// All characters counted except whitespace
-	function updateCounters(content) {
-		var words, chars;
-		if(content) {
-			words = content.match(/\S+/ig).length;
-			chars = content.match(/\S/ig).length;
-		}
-		else {
-			words = 0;
-			chars = 0;
-		}
-
-		g_wordCount.textContent = words;
-		g_charCount.textContent = chars;
-
-		return (g_wordCount.textContent === ""+words && g_charCount.textContent === ""+chars);
-	}
-
-	//////////////////////
-	/// MISC FUNCTIONS ///
-	//////////////////////
-
-	function createErrorMessage(message) {
-		var div = el("div", "alert alert-danger error-message", "");
-		var icon = el("span", "glyphicon glyphicon-exclamation-sign", "");
-		var text = el("span", "sr-only", "Error: ");
-
-		div.role="alert";
-
-		div.appendChild(icon);
-		div.appendChild(text);
-		div.appendChild(document.createTextNode(message));
-
-		return div;
 	}
 
 	// Return an object API with methods to initialize 
