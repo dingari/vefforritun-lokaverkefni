@@ -177,6 +177,25 @@ var MyList  = (function() {
 		$('a.entrylist-item').removeClass('active');
 		$(this).addClass('active');
 
+		var url = location.protocol + '//' + location.host 
+			+ '/entries/share';
+		$.ajax({
+			type: 'GET',
+			data: {
+				id: $(this).attr('id'),
+				async: true},
+			url: url
+		})
+		.done(function(res) {
+			console.log('Got back', res);
+
+			createShareList(res);
+
+		})
+		.fail(function(res) {
+			console.log('Get failed')
+		});
+
 		$('#title').val($(this).attr('data-title'));
 
 		var content = $(this).attr('data-content');
@@ -349,6 +368,107 @@ var MyList  = (function() {
 		updateCounters(formValues(g_form)['content']);
 	})
 */
+	var keyTime, lastKeyTime, timer;
+	function userSearch(e) {
+		window.clearTimeout(timer);
+		console.log('keyup')
+
+		lastKeyTime = keyTime;
+		keyTime = (new Date()).getTime();
+
+		timer = window.setTimeout(asyncUserSearch, 200);
+	}
+
+	function asyncUserSearch() {
+		var url = location.protocol + '//' + location.host 
+			+ '/users/search';
+		var id = $('entrylist-item.active').attr('id');
+		var query = $('.usersearch').val();
+
+		console.log('search for', query);
+
+		if(query.length < 3) {
+			$('.share').find('ul').html('');
+			return;
+		}
+
+		$.ajax({
+			type: 'POST',
+			data: {
+				username: query,
+				async: true},
+			url: url
+		})
+			.done(function(res) {
+				console.log('response', res)
+
+				$('.share').find('ul').html('');
+
+				for(var i in res) {
+					$('.share').find('ul').append(
+						$('<li></li>').append(
+							$('<a></a>', {
+								href: '#',
+								id: res[i].id}
+							).html(res[i].username)
+						)
+					);
+				}
+			})
+			.fail(function() {
+				console.log('Search failed');
+			})
+	}
+
+	function shareClick(e) {
+		e.preventDefault();
+		var url = location.protocol + '//' + location.host 
+			+ '/entries/share';
+		var user_id = $(this).attr('id');
+		var id = $('.entrylist-item.active').attr('id');
+
+		console.log('sharing', id, 'with', user_id);
+
+		$.ajax({
+			type: 'POST',
+			data: {
+				id: id,
+				user_id: user_id,
+				async: true
+			},
+			url: url
+		})
+			.done(function(res) {
+				console.log('result', res);
+
+				createShareList(res);
+				
+			})
+			.fail(function(res) {
+				console.log('Request failed', res)
+			})
+	}
+
+	function createShareList(content) {
+		var list = $('.shared-with ul');
+		$('.shared-with').html('')
+
+		if(content.length === 0) {
+			return;
+		}
+
+		list = $('.shared-with').append(
+			$('<p></p>').html('Færslu deilt með')
+		).append(
+			$('<ul></ul>').html('')
+		);
+
+		for(var i in content) {
+			$('.shared-with ul').append(
+				$('<li></li>').html(content[i].username)
+			);
+		}
+	}
 	
 
 	//////////////////////
@@ -360,6 +480,9 @@ var MyList  = (function() {
 		$('#save').on('click', saveClick);
 		$('#delete').on('click', deleteClick);
 		$('.saved-entries').on('click', 'a.entrylist-item', itemClick);
+
+		$('.usersearch').on('keyup', userSearch);
+		$('.share').on('click', 'a', shareClick);
 
 		$('#memobtn').on('click', function(e) {
 			e.preventDefault();

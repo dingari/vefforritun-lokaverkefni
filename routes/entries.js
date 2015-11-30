@@ -21,6 +21,13 @@ router.get('/my_entries/memos', [ensureLoggedIn, ops.memoList], renderList);
 
 router.get('/my_entries/lists', [ensureLoggedIn, ops.listList], renderList);
 
+router.post('/share', [ensureLoggedIn, ops.share], renderList);
+
+router.get('/share', [ensureLoggedIn, ops.getShareList], function(req, res, next) {
+	console.log(req.sharelist)
+	res.json(req.sharelist)
+});
+
 router.get('/user/:userid', ensureLoggedIn, function(req, res, next) {
 	var user_id = parseInt(req.params.userid);
 	var page = 1;
@@ -56,8 +63,6 @@ router.get('/user/:userid', ensureLoggedIn, function(req, res, next) {
 	}
 
 });
-
-router.post('/share', [ensureLoggedIn, share], renderList);
 
 function createFormData(id, data, callback) {
 	data.formContent = {};
@@ -108,15 +113,23 @@ function renderList(req, res, next) {
 	entries.getUsersSharedWith(data.activeItem, function(error, result) {
 		if(error) {
 			console.error(error);
+
+			if(req.body.async) {
+				res.send(500)
+			}
 		}
 
 		if(result.length > 0) {
 			data.sharelist = result;
 		}
 
-		createList(user.id, data, page, listFunc, function() {
-			res.render('my_entries', data);
-		});
+		if(req.body.async === 'true') {
+			res.json(data.sharelist);
+		} else {
+			createList(user.id, data, page, listFunc, function() {
+				res.render('my_entries', data);
+			});
+		}
 	});
 }
 

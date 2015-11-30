@@ -83,26 +83,50 @@ module.exports.save = function(req, res, next) {
 			next();
 		}
 	});
-}
+};
 
 module.exports.memoList = function(req, res, next) {
-	var user = req.session.user;
-	var data = {};
-	var page = 1;
 	req.thepath = '/memos';
 	req.activeItem = req.query.id;
 	req.listFunc = entries.getMemosByUserId;
 
 	next();
-}
+};
 
 module.exports.listList = function(req, res, next) {
-	var user = req.session.user;
-	var data = {};
-	var page = 1;
 	req.thepath = '/lists';
 	req.activeItem = req.query.id;
 	req.listFunc = entries.getListsByUserId;
 
 	next();
-}
+};
+
+module.exports.share = function(req, res, next) {
+	var user_id = req.body.user_id;
+	var id = req.body.id;
+
+	entries.setUserShareStatus(id, user_id, true, function(error, result) {
+		if(error) {
+			console.error(error);
+		} 
+
+		next();
+	});
+};
+
+module.exports.getShareList = function(req, res, next) {
+	console.log(req.query.id)
+	entries.getUsersSharedWith(req.query.id, function(error, result) {
+		if(error) {
+			console.error(error);
+
+			if(req.body.async) {
+				res.send(500);
+			}
+		}
+
+		req.sharelist = result;
+
+		next();
+	});
+};

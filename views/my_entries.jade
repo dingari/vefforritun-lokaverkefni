@@ -112,18 +112,11 @@ block content
 					a.btn.btn-default#listbtn(href='/entries/my_entries/lists') Listar
 					a.btn.btn-default#allbtn(href='/entries/my_entries') Allt
 
-			p.counter
-				span#character-count 0
-				|  stafir
-			p.counter
-				span#word-count 0
-				|  orð
-
 			.form-group.share
 				p Deila með
-				if userlist
-					.form-group
-						ul
+				.form-group
+					ul
+						if userlist
 							each user, index in userlist
 								li
 									form(action='/entries/share', method='post')
@@ -133,19 +126,19 @@ block content
 											=user.username
 				form.form(action='/users/search', method='post', role='form')
 					.form-group
-						input.form-control(type='text', name='username', 
-								placeholder='Leitaðu að notanda')
+						input.form-control.usersearch(type='text', name='username', 
+								placeholder='Leitaðu að notanda', autocomplete='off')
 						input(type='hidden', name='id', value=activeItem)
 					.form-group
 						button.btn.btn-default(type='submit')
 							| Leita
 			.form-group.shared-with
 				if sharelist
-					p Þú ert að deila þessari færslu með
-						ul
-							each user, index in sharelist
-								li
-									=user.username
+					p Færslu deilt með
+					ul
+						each user, index in sharelist
+							li
+								=user.username
 			//- button#strip.btn.btn-info.btn-block
 			//- 	span.glyphicon.glyphicon-flash
 			//- 	|  Hreinsa HTML

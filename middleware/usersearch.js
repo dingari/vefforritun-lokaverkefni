@@ -15,10 +15,14 @@ module.exports = function(req, res, next) {
 			console.error(error);
 		}
 
-		console.log('search results', result);
+		console.log('search results', result, 'async', req.body.async);
 
 		req.userlist = result;
 
-		next();
+		if(req.body.async === 'true') {
+			res.json(result)
+		} else {
+			next();
+		}
 	});
 };
