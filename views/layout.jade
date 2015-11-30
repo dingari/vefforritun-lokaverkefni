@@ -14,19 +14,19 @@ html
 						ul(class='site-nav')
 							li
 								a(href='/') Heim
-							li
-								a(href='/entries') Færslur
-							li
-								a(href='/users') Notendur
-							li 
-								a(href='/search') Leita
+							if (session.user)
+								li
+									a(href='/entries/shared/' + session.user.id) 
+										| Færslur
+								li
+									a(href='/users') Notendur
+								li 
+									a(href='/search') Leita
 
 						ul(class='user-nav')
 							if (session.user)
 								li
 									a(href='/entries/user/' + session.user.id) Mínar færslur
-								li
-									a(href='/settings') Stillingar
 								li
 									a(href='/user/' + session.user.id) 
 										p= session.user.username

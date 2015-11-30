@@ -58,6 +58,9 @@ var MyList  = (function() {
 
 				$('.entrylist-item').removeClass('active');
 
+				var find = $('#' + res.id)
+				console.log('find', find)
+
 				// Make it if it doesn't exist
 				if($('#' + res.id).length === 0) {
 					var isNew = true;
@@ -72,7 +75,6 @@ var MyList  = (function() {
 					var h = $('<h4></h4>', {class: 'text-left'});
 
 					a.append(p).append(s).append(h);
-					//a.addClass('initially-hidden');
 
 					$('.saved-entries').prepend(a);
 					$(a).slideDown(400, function() {
@@ -284,14 +286,14 @@ var MyList  = (function() {
 						type: 'text',
 						name: 'new',
 						placeholder: 'Bættu einhverju við',
-						class: 'new-item'
+						class: 'new-item checklist-input'
 					})
 				)
 			)
 		);
 
 		$('.textarea').html('').append(
-			$('<div></div>', {class: 'checklist-box'}).append(
+			$('<div></div>', {class: 'checklist-box dynamic'}).append(
 				$('<div></div>', {class: 'unchecked'})
 					.append(ulUnchecked)
 			).append(
@@ -324,13 +326,13 @@ var MyList  = (function() {
 			.append($('<input></input>', {
 				type: 'hidden',
 				name: 'item',
-				value: {id: $('.active').id, index: index}
+				value: {id: $('.active').id, index: index},
 			}))
 			.append($('<input></input>', {
 				type: 'text',
 				name: 'content',
 				value: value,
-				class: 'content'
+				class: 'content checklist-input'
 			}))
 			.append(span_rem);
 

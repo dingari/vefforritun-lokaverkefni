@@ -58,19 +58,14 @@ nav {
       float: left;
       margin-right: 1em;
       padding: 0.5em 0; }
-    .checklist-box ul .checklist-item .glyphicon-remove {
-      float: right;
-      color: #b0b0b0; }
-    .checklist-box ul .checklist-item .glyphicon-remove:hover {
-      color: black; }
-    .checklist-box ul .checklist-item input {
+    .checklist-box ul .checklist-item .checklist-input {
       box-sizing: border-box;
       width: 80%;
       border: none;
       border-bottom: 1px solid #CCC;
       padding: 0.5em;
       background-color: #f0f0f0; }
-    .checklist-box ul .checklist-item input:focus {
+    .checklist-box ul .checklist-item .checklist-input:focus {
       outline-width: 0; }
     .checklist-box ul .checklist-item button {
       position: absolute;
@@ -80,8 +75,6 @@ nav {
       height: 100%;
       opacity: 0;
       filter: alpha(opacity=0); }
-    .checklist-box ul .checklist-item .fakesubmit {
-      display: none; }
   .checklist-box .checked * {
     color: #b0b0b0; }
   .checklist-box .checked, .checklist-box .unchecked {
@@ -91,8 +84,16 @@ nav {
     color: #f0f0f0; }
   .checklist-box .unchecked .glyphicon-plus {
     color: #b0b0b0; }
-  .checklist-box .glyphicon:hover {
-    color: black; }
+
+.checklist-box.dynamic ul .checklist-item .glyphicon-remove {
+  float: right;
+  color: #b0b0b0; }
+
+.checklist-box.dynamic ul .checklist-item .glyphicon-remove:hover {
+  color: black; }
+
+.checklist-box.dynamic .glyphicon:hover {
+  color: black; }
 
 .saved-entries h4 {
   display: inline-block; }

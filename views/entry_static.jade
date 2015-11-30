@@ -1,0 +1,37 @@
+extends layout
+
+block content
+	.col-md-2
+	.col-md-8
+		.form-group
+					h4= formTitle
+		.form-group.textarea
+			if formContent.checked
+				.checklist-box
+					.unchecked
+						ul
+							each item, index in formContent.content
+								if !formContent.checked[index]
+									li.checklist-item.list(id='c' + index, data-checked='false')
+										form(action='/entries/my_entries?list=true')
+											span.glyphicon.glyphicon-ok
+												button.checkmark(type='submit', class='checkmark', disabled=true)
+											input.checklist-input(type='text', name='content', 
+														class='content', value=item, disabled=true)
+
+					.checked
+						ul
+							each item, index in formContent.content
+								if formContent.checked[index]
+									li.checklist-item(id='c' + index, data-checked='true')
+										form(action='/entries/my_entries?list=true')
+											span.glyphicon.glyphicon-ok
+												button.checkmark(type='submit', disabled=true)
+											input.checklist-input(type='text', name='content', value=item, disabled=true)
+									
+			else
+				textarea#content.form-control(name='content', 
+					placeholder='Your stuff here...', 
+					rows='20')
+					= formContent.content
+	.col-md-2

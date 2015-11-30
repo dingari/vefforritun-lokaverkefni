@@ -84,16 +84,7 @@ nav {
 				padding: 0.5em 0;
 			}
 
-			.glyphicon-remove {
-				float: right;
-				color: $muted-color;
-			}
-
-			.glyphicon-remove:hover {
-				color: black;
-			}
-
-			input {
+			.checklist-input {
 				box-sizing: border-box;
 				width: 80%;
 				border: none;
@@ -102,7 +93,7 @@ nav {
 				background-color: $fg-color;
 			}
 
-			input:focus {
+			.checklist-input:focus {
 				outline-width: 0;
 			}
 
@@ -116,14 +107,6 @@ nav {
 				opacity:0; 
 				filter:alpha(opacity=0);
 			}
-
-			.fakesubmit {
-				display: none;
-			}
-
-			// .new-item {
-			// 	margin-left: 1em;
-			// }
 		}
 	}
 
@@ -145,6 +128,21 @@ nav {
 
 		.glyphicon-plus {
 			color: $muted-color;
+		}
+	}
+}
+
+.checklist-box.dynamic {
+	ul {
+		.checklist-item {
+			.glyphicon-remove {
+				float: right;
+				color: $muted-color;
+			}
+
+			.glyphicon-remove:hover {
+				color: black;
+			}
 		}
 	}
 

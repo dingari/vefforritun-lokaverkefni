@@ -36,7 +36,7 @@ block content
 					input(type='hidden' name='id' value=activeItem)
 				.form-group.textarea
 					if formContent.checked
-						.checklist-box
+						.checklist-box.dynamic
 							.unchecked
 								ul
 									each item, index in formContent.content
@@ -47,7 +47,7 @@ block content
 														button.checkmark(type='submit', class='checkmark')
 													input(type='hidden', name='item'
 															value='{id:' + activeItem + ', index:' + index)
-													input(type='text', name='content', 
+													input.checklist-input(type='text', name='content', 
 																class='content', value=item)
 													span.glyphicon.glyphicon-remove
 														button.checkmark(type='submit', 
@@ -57,7 +57,7 @@ block content
 										form(action='/entries/my_entries?list=true', id='new-form')
 											span.glyphicon.glyphicon-plus
 												button#new-check(type='submit')
-											input.new-item(type='text', name='foo', 
+											input.new-item.checklist-input(type='text', name='foo', 
 													placeholder='Bættu einhverju við',
 													autocomplete='off')
 
@@ -71,7 +71,7 @@ block content
 														button.checkmark(type='submit')
 													input(type='hidden', name='item'
 															value='{id:' + activeItem + ', index:' + index)
-													input(type='text', name='content', value=item)
+													input.checklist-input(type='text', name='content', value=item)
 											
 					else
 						textarea#content.form-control(name='content', 
