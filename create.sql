@@ -36,8 +36,9 @@ CREATE TABLE content
 
 CREATE TABLE collaborators 
 (
-	user_id INT REFERENCES users(id) ON DELETE CASCADE,
-	entry_id INT REFERENCES entries(id) ON DELETE CASCADE
+	user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	entry_id INT NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+	can_edit BOOLEAN
 );
 
 COMMIT;
