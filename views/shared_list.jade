@@ -1,13 +1,18 @@
 extends layout
 
 block content
-	h1= 'Deilt með notanda foo'
+	h2= 'Deilt með notanda ' + user.username
 	if (list)
-		.list-group
+		.list-group(role='group')
 			each item, index in list
+				- icon = 'glyphicon'
+				if (item.content.checked)
+					- icon += ' glyphicon-th-list'
+				else
+					- icon += '  glyphicon-pencil'
 				a(class='list-group-item' 
 					href='/entries/' +item.id,
 					id=item.id)
-						p(class='text-left')= item.date 
-						span(class = icon)
-						h4(class='text-left')= item.title
+					p(class='text-left')= item.date 
+					span(class = icon)
+					h4(class='text-left')= item.title

@@ -154,6 +154,10 @@ nav {
 	}
 }
 
+input:disabled, textarea:disabled {
+	cursor: text !important;
+}
+
 .saved-entries {
 	h4 {
 		display: inline-block;

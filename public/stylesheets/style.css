@@ -95,6 +95,9 @@ nav {
 .checklist-box.dynamic .glyphicon:hover {
   color: black; }
 
+input:disabled, textarea:disabled {
+  cursor: text !important; }
+
 .saved-entries h4 {
   display: inline-block; }
 

@@ -7,6 +7,7 @@ var xss = require('xss');
 var share = require('../middleware/share');
 var ensureLoggedIn = require('../middleware/loggedin');
 var ops = require('../middleware/entryoperations');
+var userops = require('../middleware/usersearch');
 
 router.get('/my_entries', ensureLoggedIn, renderList);
 
@@ -28,7 +29,9 @@ router.get('/share', [ensureLoggedIn, ops.getShareList], function(req, res, next
 	res.json(req.sharelist);
 });
 
-router.get('/shared/:userid', ensureLoggedIn, function(req, res, next) {
+router.get('/shared/:userid', [ensureLoggedIn, userops.find], 
+		function(req, res, next) {
+
 	var user_id = parseInt(req.params.userid);
 	var data = {};
 
@@ -38,12 +41,15 @@ router.get('/shared/:userid', ensureLoggedIn, function(req, res, next) {
 		}
 
 		data.list = result;
+		data.user = req.data.user;
 
 		res.render('shared_list', data);
 	})
 });
 
-router.get('/user/:userid', ensureLoggedIn, function(req, res, next) {
+router.get('/user/:userid', [ensureLoggedIn, userops.find], 
+		function(req, res, next) {
+
 	var user_id = parseInt(req.params.userid);
 	var page = 1;
 	var data = {}
@@ -57,6 +63,7 @@ router.get('/user/:userid', ensureLoggedIn, function(req, res, next) {
 				console.error(error);
 			} else {
 				data.list = result;
+				data.user = req.data.user;
 
 				console.log(data.list);
 

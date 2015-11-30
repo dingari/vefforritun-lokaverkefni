@@ -4,7 +4,7 @@ var express = require('express');
 var users = require('../lib/users_db');
 
 
-module.exports = function(req, res, next) {
+module.exports.search = function(req, res, next) {
 	var username = req.body.username;
 	var user_id = req.session.user.id;
 
@@ -24,5 +24,20 @@ module.exports = function(req, res, next) {
 		} else {
 			next();
 		}
+	});
+};
+
+module.exports.find = function(req, res, next) {
+	var user_id = req.params.userid;
+
+	users.findById(user_id, false, function(error, result) {
+		if(error) {
+			console.error(error);
+		}
+
+		req.data = {};
+		req.data.user = result;
+
+		next();
 	});
 };
